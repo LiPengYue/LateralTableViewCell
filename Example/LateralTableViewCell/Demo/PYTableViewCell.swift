@@ -66,6 +66,7 @@ class PYTableViewCell: LateralTableViewCell,LateralViewDelegate {
     private func setup() {
         delegate = self
         contentView.backgroundColor = UIColor.white
+        lateralView.backgroundColor = #colorLiteral(red: 0.8704799107, green: 0.9112444196, blue: 1, alpha: 1)
         
         lateralView.continerView.addSubview(titleLabel)
         lateralView.continerView.addSubview(iconImageView)

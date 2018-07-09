@@ -1,0 +1,27 @@
+PODS:
+  - LateralTableViewCell (0.1.0)
+  - Nimble (7.0.3)
+  - Quick (1.2.0)
+
+DEPENDENCIES:
+  - LateralTableViewCell (from `../`)
+  - Nimble (~> 7.0.2)
+  - Quick (~> 1.2.0)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Nimble
+    - Quick
+
+EXTERNAL SOURCES:
+  LateralTableViewCell:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  LateralTableViewCell: db38af7a9b28b610ceed0fd22adf90a8f0a2e0ad
+  Nimble: 7f5a9c447a33002645a071bddafbfb24ea70e0ac
+  Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
+
+PODFILE CHECKSUM: d869b628ee3c821c961e32c28a232247adba7e60
+
+COCOAPODS: 1.5.3

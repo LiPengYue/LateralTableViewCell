@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03265A7C20F32CE000014F40 /* PYTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03265A7920F32CE000014F40 /* PYTableViewCell.swift */; };
+		03265A7E20F32CE000014F40 /* PYTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03265A7B20F32CE000014F40 /* PYTableView.swift */; };
+		03265A8620F3355900014F40 /* UIColor+Arc4random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03265A8520F3355900014F40 /* UIColor+Arc4random.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
@@ -29,6 +32,11 @@
 
 /* Begin PBXFileReference section */
 		011077950D41EF77C961F622 /* Pods-LateralTableViewCell_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LateralTableViewCell_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-LateralTableViewCell_Tests/Pods-LateralTableViewCell_Tests.release.xcconfig"; sourceTree = "<group>"; };
+		03265A7920F32CE000014F40 /* PYTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PYTableViewCell.swift; sourceTree = "<group>"; };
+		03265A7B20F32CE000014F40 /* PYTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PYTableView.swift; sourceTree = "<group>"; };
+		03265A7F20F32F6400014F40 /* SnapKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SnapKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		03265A8120F32F8100014F40 /* SnapKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SnapKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		03265A8520F3355900014F40 /* UIColor+Arc4random.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Arc4random.swift"; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* LateralTableViewCell_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LateralTableViewCell_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -39,12 +47,12 @@
 		607FACE51AFB9204008FA782 /* LateralTableViewCell_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LateralTableViewCell_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
-		8AB8FC0BFB705A1AF95DDAC5 /* LateralTableViewCell.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = LateralTableViewCell.podspec; path = ../LateralTableViewCell.podspec; sourceTree = "<group>"; };
+		8AB8FC0BFB705A1AF95DDAC5 /* LateralTableViewCell.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LateralTableViewCell.podspec; path = ../LateralTableViewCell.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A75918E6285925977172F737 /* Pods-LateralTableViewCell_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LateralTableViewCell_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LateralTableViewCell_Tests/Pods-LateralTableViewCell_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		B8E674617C4BB693120C756C /* Pods_LateralTableViewCell_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LateralTableViewCell_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C340F7F4F56AD46183F69C6C /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		C340F7F4F56AD46183F69C6C /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		C7870554DA2E35673A3109D2 /* Pods-LateralTableViewCell_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LateralTableViewCell_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-LateralTableViewCell_Example/Pods-LateralTableViewCell_Example.release.xcconfig"; sourceTree = "<group>"; };
-		DD85453550B85AC543AF03A2 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		DD85453550B85AC543AF03A2 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		EC41BCF3708F2827570D7477 /* Pods_LateralTableViewCell_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LateralTableViewCell_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFA223C6FF39D363F242C2CC /* Pods-LateralTableViewCell_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LateralTableViewCell_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LateralTableViewCell_Example/Pods-LateralTableViewCell_Example.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -69,6 +77,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		03265A7820F32CCA00014F40 /* Demo */ = {
+			isa = PBXGroup;
+			children = (
+				03265A8520F3355900014F40 /* UIColor+Arc4random.swift */,
+				03265A7B20F32CE000014F40 /* PYTableView.swift */,
+				03265A7920F32CE000014F40 /* PYTableViewCell.swift */,
+			);
+			path = Demo;
+			sourceTree = "<group>";
+		};
 		16F65369A4102AE505B10DB4 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -104,6 +122,7 @@
 		607FACD21AFB9204008FA782 /* Example for LateralTableViewCell */ = {
 			isa = PBXGroup;
 			children = (
+				03265A7820F32CCA00014F40 /* Demo */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
@@ -153,6 +172,8 @@
 		CCED0172450C91A45D490161 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				03265A8120F32F8100014F40 /* SnapKit.framework */,
+				03265A7F20F32F6400014F40 /* SnapKit.framework */,
 				EC41BCF3708F2827570D7477 /* Pods_LateralTableViewCell_Example.framework */,
 				B8E674617C4BB693120C756C /* Pods_LateralTableViewCell_Tests.framework */,
 			);
@@ -213,6 +234,7 @@
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = W7835H6QQA;
 						LastSwiftMigration = 0900;
 					};
 					607FACE41AFB9204008FA782 = {
@@ -343,8 +365,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03265A8620F3355900014F40 /* UIColor+Arc4random.swift in Sources */,
+				03265A7E20F32CE000014F40 /* PYTableView.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
+				03265A7C20F32CE000014F40 /* PYTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -490,6 +515,7 @@
 			baseConfigurationReference = EFA223C6FF39D363F242C2CC /* Pods-LateralTableViewCell_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = W7835H6QQA;
 				INFOPLIST_FILE = LateralTableViewCell/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
@@ -505,6 +531,7 @@
 			baseConfigurationReference = C7870554DA2E35673A3109D2 /* Pods-LateralTableViewCell_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = W7835H6QQA;
 				INFOPLIST_FILE = LateralTableViewCell/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;

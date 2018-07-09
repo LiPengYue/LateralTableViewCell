@@ -12,7 +12,8 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        let tableView = PYTableView(frame: view.bounds, style: UITableViewStyle.plain)
+        view.addSubview(tableView)
     }
 
     override func didReceiveMemoryWarning() {

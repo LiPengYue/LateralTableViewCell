@@ -24,11 +24,9 @@ class PYTableView: UITableView,
     private func setup() {
         delegate = self
         dataSource = self
-        
+        isAutoCloseAllCellWithScrollTableView = true
         register(PYTableViewCell.self, forCellReuseIdentifier: bookCellID)
     }
-    
-    
 }
 
 
@@ -52,8 +50,8 @@ extension PYTableView {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
     }
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        closeAllCell()
-    }
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        closeAllCell()
+//    }
 }
 

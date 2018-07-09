@@ -11,11 +11,11 @@ import UIKit
 open class LateralScrollView: UIScrollView {
     private var isOpen = false
     private var point = CGPoint()
-    open func setEventWith(point Point: CGPoint, andIsOpen isOpen: Bool) {
+    func setEventWith(point Point: CGPoint, andIsOpen isOpen: Bool) {
         self.isOpen = isOpen
         self.point = Point
     }
-    open var isRelevantEvent = false
+    var isRelevantEvent = false
     override open func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         if isOpen && point.x >= self.point.x || isRelevantEvent{
             return false

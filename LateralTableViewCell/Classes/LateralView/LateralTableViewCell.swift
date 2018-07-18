@@ -26,6 +26,7 @@ open class LateralTableViewCell: UITableViewCell {
     }
     
     // MARK: - properties
+    open var continerView: UIView { return lateralView.continerView }
     open var lateralViewEdgeInsets = UIEdgeInsets.zero {
         didSet {
             updataLateralViewConstraint()
@@ -35,6 +36,7 @@ open class LateralTableViewCell: UITableViewCell {
     open var isOpen = false { didSet { lateralView.isOpen = isOpen } }
     /// 是否可以同时展开多个cell
     open var isUnfoldingAtTheSameTime: Bool = false
+    
     private weak var tableView: UITableView?
     // MARK: - func
     // MARK: handle views

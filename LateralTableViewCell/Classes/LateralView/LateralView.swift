@@ -25,6 +25,9 @@ import UIKit
     在tableView添加的分类中添加`observe：LateralTableViewObserver`属性
     并监听offset变化，如果改变，则关闭所有cell
   5. 未解决问题：允许多个cell打开的情况下，滑动tableView依然关闭所有cell，没有碰到类似需求，如果有用到可以呼叫我进行优化
+  6. tableView 自适应行高问题的解决
+    用系统约束布局，scrollView，以及continerView,
+    在布局continerView的时候，因为其属于scrollView的subView，所以需要注意，设置left，width，top，bottom 等于scrollView，并设置scrollView的contentSize，才能正常显示并可以滑动
  */
 
 ///获取 button
@@ -268,6 +271,7 @@ open class LateralView: UIView,UIScrollViewDelegate {
         
         return scrollView
     }()
+  
 }
 
 //MARK: - scrollView delegate

@@ -24,6 +24,7 @@ class PYTableView: UITableView,
     private func setup() {
         delegate = self
         dataSource = self
+        estimatedRowHeight = 140
         isAutoCloseAllCellWithScrollTableView = true
         register(PYTableViewCell.self, forCellReuseIdentifier: bookCellID)
     }
@@ -44,9 +45,9 @@ extension PYTableView {
         return UITableViewCell()
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 160
-    }
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        return 160
+//    }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
     }

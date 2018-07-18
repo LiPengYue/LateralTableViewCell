@@ -15,7 +15,7 @@ open class LateralTableViewCell: UITableViewCell {
     }
     
     // MARK: - init
-   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.selectionStyle = .none
         setupFunc()
@@ -28,8 +28,7 @@ open class LateralTableViewCell: UITableViewCell {
     // MARK: - properties
     open var lateralViewEdgeInsets = UIEdgeInsets.zero {
         didSet {
-            isLayoutLaterView = true
-            layoutLateralView()
+            updataLateralViewConstraint()
         }
     }
     weak open var delegate: LateralViewDelegate? { didSet { lateralView.delegate = delegate } }
@@ -41,6 +40,8 @@ open class LateralTableViewCell: UITableViewCell {
     // MARK: handle views
     private func setupFunc() {
         contentView.addSubview(lateralView)
+        lateralView.translatesAutoresizingMaskIntoConstraints = false
+        layoutLateralView()
     }
     
     // MARK:functions
@@ -59,29 +60,53 @@ open class LateralTableViewCell: UITableViewCell {
         super.didMoveToSuperview()
         tableView = getTableView(view: self)
     }
-    private var isLayoutLaterView: Bool = true
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        if !isLayoutLaterView { return }
-        layoutLateralView()
-    }
-    
     private func layoutLateralView() {
+        lateralView.translatesAutoresizingMaskIntoConstraints = false
+        let left = lateralViewEdgeInsets.left
+        let top = lateralViewEdgeInsets.top
+        let right = lateralViewEdgeInsets.right
+        let bottom = lateralViewEdgeInsets.bottom
         
-        let x = lateralViewEdgeInsets.left
-        let w = contentView.frame.width
-            - lateralViewEdgeInsets.left
-            - lateralViewEdgeInsets.right
+        leftConstraint = lateralView.leftConstraint(toItem: contentView, offset: left)
+        rightConstraint = lateralView.rightConstraint(toItem: contentView, offset: right)
+        bottomConstraint = lateralView.bottomConstraint(toItem: contentView, offset: bottom)
+        topConstraint = lateralView.topConstraint(toItem: contentView, offset: top)
         
-        let y = lateralViewEdgeInsets.top
-        let h = contentView.frame.height
-            - lateralViewEdgeInsets.top
-            - lateralViewEdgeInsets.bottom
-        
-        lateralView.frame = CGRect.init(x: x, y: y, width: w, height: h)
+        contentView.addConstraint(leftConstraint!)
+        contentView.addConstraint(rightConstraint!)
+        contentView.addConstraint(bottomConstraint!)
+        contentView.addConstraint(topConstraint!)
+        //        contentView.addConstraint(heightConstraint!)
+        contentView.updateConstraints()
     }
-    
-    
+    private func updataLateralViewConstraint() {
+        let left = lateralViewEdgeInsets.left
+        let top = lateralViewEdgeInsets.top
+        let right = lateralViewEdgeInsets.right
+        let bottom = lateralViewEdgeInsets.bottom
+        
+        contentView.removeConstraint(leftConstraint!)
+        contentView.removeConstraint(rightConstraint!)
+        contentView.removeConstraint(bottomConstraint!)
+        contentView.removeConstraint(topConstraint!)
+        
+        leftConstraint = lateralView.leftConstraint(toItem: contentView, offset: left)
+        rightConstraint = lateralView.rightConstraint(toItem: contentView, offset: right)
+        bottomConstraint = lateralView.bottomConstraint(toItem: contentView, offset: bottom)
+        topConstraint = lateralView.topConstraint(toItem: contentView, offset: top)
+        heightConstraint = lateralView.heightConstraint(toItem: contentView, offset: 100)
+        contentView.addConstraint(leftConstraint!)
+        contentView.addConstraint(rightConstraint!)
+        contentView.addConstraint(bottomConstraint!)
+        contentView.addConstraint(topConstraint!)
+//        contentView.addConstraint(heightConstraint!)
+        contentView.updateConstraints()
+    }
+    private var leftConstraint: NSLayoutConstraint?
+    private var rightConstraint: NSLayoutConstraint?
+    private var bottomConstraint: NSLayoutConstraint?
+    private var topConstraint: NSLayoutConstraint?
+    private var heightConstraint: NSLayoutConstraint?
     // MARK: lazy loads
     public lazy var lateralView: LateralView = {
         
@@ -93,13 +118,92 @@ open class LateralTableViewCell: UITableViewCell {
             }
         }
         return lateralView
-        
     }()
 }
 
 
 
 
-
+extension UIView {
+    func leftConstraint(toItem: UIView,offset: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
+        let left = NSLayoutConstraint.init(item: self,
+                                           attribute: .left,
+                                           relatedBy: .equal,
+                                           toItem: toItem,
+                                           attribute: .left,
+                                           multiplier: 1,
+                                           constant: offset)
+        return left
+    }
+    func rightConstraint(toItem: UIView,offset: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
+        let right = NSLayoutConstraint.init(item: self,
+                                            attribute: .right,
+                                            relatedBy: .equal,
+                                            toItem: toItem,
+                                            attribute: .right,
+                                            multiplier: 1,
+                                            constant: offset)
+        return right
+    }
+    
+    func bottomConstraint(toItem: UIView,offset: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
+        let bottom = NSLayoutConstraint.init(item: self,
+                                             attribute: .bottom,
+                                             relatedBy: .equal,
+                                             toItem: toItem,
+                                             attribute: .bottom,
+                                             multiplier: 1,
+                                             constant: offset)
+        return bottom
+    }
+    
+    func topConstraint(toItem: UIView,offset: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
+        let top = NSLayoutConstraint.init(item: self,
+                                          attribute: .top,
+                                          relatedBy: .equal,
+                                          toItem: toItem,
+                                          attribute: .top,
+                                          multiplier: 1,
+                                          constant: offset)
+        return top
+    }
+    func heightConstraint(toItem: UIView,offset: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
+        let height = NSLayoutConstraint.init(item: self,
+                                          attribute: .height,
+                                          relatedBy: .equal,
+                                          toItem: nil,
+                                          attribute: .notAnAttribute,
+                                          multiplier: 1,
+                                          constant: offset)
+        return height
+    }
+    func widthConstraint(offset: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
+        let width = NSLayoutConstraint.init(item: self,
+                                          attribute: .width,
+                                          relatedBy: .equal,
+                                          toItem: nil,
+                                          attribute: .notAnAttribute,
+                                          multiplier: 1,
+                                          constant: offset)
+        return width
+    }
+    func widthConstraint(toItem: UIView,offset: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
+        let width = NSLayoutConstraint.init(item: self,
+                                            attribute: .width,
+                                            relatedBy: .equal,
+                                            toItem: toItem,
+                                            attribute: .width,
+                                            multiplier: 1,
+                                            constant: offset)
+        return width
+    }
+}
 
 

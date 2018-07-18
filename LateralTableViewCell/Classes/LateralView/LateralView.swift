@@ -168,6 +168,22 @@ open class LateralView: UIView,UIScrollViewDelegate {
         scrollView.removeFromSuperview()
         addSubview(scrollView)
         scrollView.addSubview(continerView)
+        
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        continerView.translatesAutoresizingMaskIntoConstraints = false
+        let sLeft = scrollView.leftConstraint(toItem: self, offset: 0)
+        let sRight = scrollView.rightConstraint(toItem: self, offset: 0)
+        let sTop = scrollView.topConstraint(toItem: self, offset: 0)
+        let sBottom = scrollView.bottomConstraint(toItem: self, offset: 0)
+        self.addConstraints([sLeft,sRight,sTop,sBottom])
+        
+        let cLeft = continerView.leftConstraint(toItem: scrollView, offset: 0)
+//        let cRight = continerView.rightConstraint(toItem: self, offset: 0)
+        let cTop = continerView.topConstraint(toItem: self, offset: 0)
+        let cBottom = continerView.bottomConstraint(toItem: self, offset: 0)
+        let cwidth = continerView.widthConstraint(toItem: self, offset: 0)
+        self.addConstraints([cLeft,cBottom,cTop,cwidth])
+        
         buttonArrayPrivate = (delegate?.lateralViewAddButton(view: self)) ?? []
         layoutButton()
     }
@@ -204,15 +220,26 @@ open class LateralView: UIView,UIScrollViewDelegate {
         continerView.addSubview(view)
     }
     
+    var heightConstraint: NSLayoutConstraint?
     override open func layoutSubviews() {
+
+         let heightConstraintTemp = scrollView.heightConstraint(toItem: self, offset: self.frame.height)
+        
         if (isFirstLayout) {
             isFirstLayout = false
-            scrollView.frame = bounds
-            continerView.frame = bounds
+//            scrollView.frame = bounds
+//            continerView.frame = bounds
+            self.addConstraint(heightConstraintTemp)
             continerView.backgroundColor = continerViewColor
+            self.updateConstraints()
             layoutButton()
-            scrollView.contentSize = CGSize.init(width: frame.size.width + buttonTotalWidthPrivate, height: 0)
+        }else{
+            self.removeConstraint(heightConstraint!)
+            self.addConstraint(heightConstraintTemp)
+            self.updateConstraints()
         }
+        heightConstraint = heightConstraintTemp
+        scrollView.contentSize = CGSize.init(width: frame.size.width + buttonTotalWidthPrivate, height: 0)
     }
     
     override open func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {

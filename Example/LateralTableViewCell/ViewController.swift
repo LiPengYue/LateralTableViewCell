@@ -14,6 +14,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         let tableView = PYTableView(frame: view.bounds, style: UITableViewStyle.plain)
         view.addSubview(tableView)
+
     }
 
     override func didReceiveMemoryWarning() {

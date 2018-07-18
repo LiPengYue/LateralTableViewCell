@@ -34,10 +34,25 @@ class PYTableViewCell: LateralTableViewCell,LateralViewDelegate {
         lateralView.continerView.addSubview(iconImageView)
         lateralView.continerView.addSubview(subTitle)
         
-        iconImageView.frame = CGRect.init(x: 10, y: 10, width: 140, height: 140)
-        titleLabel.frame = CGRect.init(x: 215, y: 10, width: 300, height: 30)
-        subTitle.frame = CGRect.init(x: 215, y: 50, width: 200, height: 30)
-//        lateralViewEdgeInsets = UIEdgeInsets.init(top: 10, left: 10, bottom: 10, right: 10)
+        iconImageView.snp.makeConstraints { (make) in
+            make.left.top.equalTo(lateralView.continerView).offset(10)
+            make.height.width.equalTo(140)
+            make.bottom.equalTo(lateralView.continerView.snp.bottom).offset(-10)
+        }
+        titleLabel.snp.makeConstraints { (make) in
+           make.top.equalTo(iconImageView)
+            make.left.equalTo(iconImageView.snp.right).offset(10)
+            make.right.equalTo(lateralView.continerView).offset(10)
+        }
+        subTitle.snp.makeConstraints { (make) in
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.left.right.equalTo(titleLabel)
+        }
+//        iconImageView.frame = CGRect.init(x: 10, y: 10, width: 140, height: 140)
+//        titleLabel.frame = CGRect.init(x: 215, y: 10, width: 300, height: 30)
+//        subTitle.frame = CGRect.init(x: 215, y: 50, width: 200, height: 30)
+        
+        lateralViewEdgeInsets = UIEdgeInsets.init(top: 10, left: 10, bottom: -10, right: -10)
     }
     ///懒加载
     private lazy var titleLabel: UILabel = {

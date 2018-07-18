@@ -26,7 +26,7 @@ open class LateralTableViewCell: UITableViewCell {
     }
     
     // MARK: - properties
-    var laterViewEdgeInsets = UIEdgeInsets.zero {
+    open var lateralViewEdgeInsets = UIEdgeInsets.zero {
         didSet {
             isLayoutLaterView = true
             layoutLateralView()
@@ -68,15 +68,15 @@ open class LateralTableViewCell: UITableViewCell {
     
     private func layoutLateralView() {
         
-        let x = laterViewEdgeInsets.left
+        let x = lateralViewEdgeInsets.left
         let w = contentView.frame.width
-            - laterViewEdgeInsets.left
-            - laterViewEdgeInsets.right
+            - lateralViewEdgeInsets.left
+            - lateralViewEdgeInsets.right
         
-        let y = laterViewEdgeInsets.top
+        let y = lateralViewEdgeInsets.top
         let h = contentView.frame.height
-            - laterViewEdgeInsets.top
-            - laterViewEdgeInsets.bottom
+            - lateralViewEdgeInsets.top
+            - lateralViewEdgeInsets.bottom
         
         lateralView.frame = CGRect.init(x: x, y: y, width: w, height: h)
     }

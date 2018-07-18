@@ -11,44 +11,6 @@ import LateralTableViewCell
 
 /// 书籍阅读
 class PYTableViewCell: LateralTableViewCell,LateralViewDelegate {
-    func lateralViewAddButton(view: LateralView) -> ([UIButton]) {
-        let buttonCount = Int(arc4random() % 3) + 1
-        var buttonArray = [UIButton]()
-        for _ in 0 ..< buttonCount {
-            let button = UIButton()
-            button.addTarget(self, action: #selector(clickButton), for: UIControlEvents.touchUpInside)
-            
-            button.layer.cornerRadius = 20
-            button.layer.masksToBounds = true
-            button.backgroundColor = UIColor.randomColor
-//            button.alpha = 0.5
-            button.setTitle("😄哈", for: UIControlState.selected)
-            button.setTitle("点我", for: UIControlState.normal)
-            buttonArray.append(button)
-        }
-        return buttonArray
-    }
-    
-    @objc private func clickButton(button: UIButton) {
-        self.lateralView.continerView.backgroundColor = button.backgroundColor ?? UIColor.white
-        self.isOpen = false
-    }
-    
-    func lateralViewButtonWidth(button: UIButton, index: NSInteger) -> (CGFloat) {
-        return 50
-    }
-    
-    func lateralViewLastButtonLeftMargin(view: LateralView) -> (CGFloat) {
-        return 10
-    }
-    
-    func lateralViewButtonRightMargin(button: UIButton, index: NSInteger) -> (CGFloat) {
-        return 10
-    }
-    
-    func lateralViewButtonTopBottomMargin(button: UIButton, index: NSInteger) -> (CGFloat) {
-        return 10
-    }
     
     // MARK: - init
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -75,7 +37,7 @@ class PYTableViewCell: LateralTableViewCell,LateralViewDelegate {
         iconImageView.frame = CGRect.init(x: 10, y: 10, width: 140, height: 140)
         titleLabel.frame = CGRect.init(x: 215, y: 10, width: 300, height: 30)
         subTitle.frame = CGRect.init(x: 215, y: 50, width: 200, height: 30)
-        
+//        lateralViewEdgeInsets = UIEdgeInsets.init(top: 10, left: 10, bottom: 10, right: 10)
     }
     ///懒加载
     private lazy var titleLabel: UILabel = {
@@ -108,4 +70,45 @@ class PYTableViewCell: LateralTableViewCell,LateralViewDelegate {
 }
 
 
+// MARK: - delegate
+extension PYTableViewCell {
+    func lateralViewAddButton(view: LateralView) -> ([UIButton]) {
+        let buttonCount = Int(arc4random() % 3) + 1
+        var buttonArray = [UIButton]()
+        for _ in 0 ..< buttonCount {
+            let button = UIButton()
+            button.addTarget(self, action: #selector(clickButton), for: UIControlEvents.touchUpInside)
+            
+            button.layer.cornerRadius = 20
+            button.layer.masksToBounds = true
+            button.backgroundColor = UIColor.randomColor
+            //            button.alpha = 0.5
+            button.setTitle("😄哈", for: UIControlState.selected)
+            button.setTitle("点我", for: UIControlState.normal)
+            buttonArray.append(button)
+        }
+        return buttonArray
+    }
+    
+    @objc private func clickButton(button: UIButton) {
+        self.lateralView.continerView.backgroundColor = button.backgroundColor ?? UIColor.white
+        self.isOpen = false
+    }
+    
+    func lateralViewButtonWidth(button: UIButton, index: NSInteger) -> (CGFloat) {
+        return 50
+    }
+    
+    func lateralViewLastButtonLeftMargin(view: LateralView) -> (CGFloat) {
+        return 10
+    }
+    
+    func lateralViewButtonRightMargin(button: UIButton, index: NSInteger) -> (CGFloat) {
+        return 10
+    }
+    
+    func lateralViewButtonTopBottomMargin(button: UIButton, index: NSInteger) -> (CGFloat) {
+        return 10
+    }
+}
 

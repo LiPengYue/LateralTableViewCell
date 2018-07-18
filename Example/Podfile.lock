@@ -1,5 +1,5 @@
 PODS:
-  - LateralTableViewCell (0.1.0)
+  - LateralTableViewCell (0.1.3)
   - Nimble (7.0.3)
   - Quick (1.2.0)
 
@@ -18,7 +18,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  LateralTableViewCell: db38af7a9b28b610ceed0fd22adf90a8f0a2e0ad
+  LateralTableViewCell: c10fe9a3506e8b86a7bb35bef361c298982306c7
   Nimble: 7f5a9c447a33002645a071bddafbfb24ea70e0ac
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
 

@@ -7,6 +7,25 @@
 //
 
 import UIKit
+// read me
+/**
+  1. 层级结构（superView -> subView）
+    self.addSubView(buttons)
+    self.addSubView(scrollView)
+    scrollView.addSubView(continerView)
+  2. 侧滑后button点击问题的解决方法：
+    其实scrollView是挡住了buttons
+    自定义scrollView：`LateralScrollView`
+    重写了`func point(inside point: CGPoint, with event: UIEvent?) -> Bool` 方法
+    判断点击范围是否在button的范围内，如果在，则响应事件穿透到下一层view，否则响应事件
+  3. 打开cell后的复用问题的解决：
+    给tableView添加分类`TableView+LateralView`
+    添加了当前打开的index属性作为标记
+  4. 滑动tableView的时候关闭所有cell的解决
+    在tableView添加的分类中添加`observe：LateralTableViewObserver`属性
+    并监听offset变化，如果改变，则关闭所有cell
+  5. 未解决问题：允许多个cell打开的情况下，滑动tableView依然关闭所有cell，没有碰到类似需求，如果有用到可以呼叫我进行优化
+ */
 
 ///获取 button
 @objc public protocol LateralViewDelegate {
@@ -28,7 +47,7 @@ import UIKit
 
 /// 自定义 侧滑
 open class LateralView: UIView,UIScrollViewDelegate {
-    
+    // MARK: - init
     override init(frame: CGRect) {
         super.init(frame:frame)
         setup()
@@ -37,56 +56,14 @@ open class LateralView: UIView,UIScrollViewDelegate {
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    //MARK: - 关于配置
-    ///设置
-    private func setup() {
-        scrollView.panGestureRecognizer.addObserver(self, forKeyPath: "state", options: NSKeyValueObservingOptions.new, context: nil)
-        isFirstLayout = true
-        scrollView.removeFromSuperview()
-        addSubview(scrollView)
-        scrollView.addSubview(continerView)
-        buttonArrayPrivate = (delegate?.lateralViewAddButton(view: self)) ?? []
-        layoutButton()
-    }
     
-    //MARK: - property
-    private var isFirstLayout = true
-    private var buttonArrayPrivate: [UIButton] = [UIButton]()
-    private var buttonWDic = [UIButton:CGFloat]()
-    private var lateralViewWillChangeOpenStatusBlock: ((_ view:LateralView,_ isOpen:Bool)->())?
-    private var buttonTotalWidthPrivate: CGFloat = 0
-    private var tap: UITapGestureRecognizer = {
-        let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapFunc))
-        return tap
-    }()
-    @objc private func tapFunc(tap: UITapGestureRecognizer) {
-       isOpen = true
-    }
-    /// scrollView
-    private lazy var scrollView: LateralScrollView = {
-        let scrollView = LateralScrollView()
-        scrollView.delegate = self
-        scrollView.addGestureRecognizer(self.tap)
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.backgroundColor = UIColor.clear
-   
-        return scrollView
-    }()
-    
+    // MARK: - properties
     /// 在这上面进行布局
-    open lazy var continerView: UIView = {
-        let view = UIView()
-        return view
-    }()
-
+    open var continerView: UIView { return continerView_private }
+    
     /// buttonArray
-    open var buttonArray: [UIButton] {
-        get{
-            return buttonArrayPrivate
-        }
-    }
-   
+    open var buttonArray: [UIButton] { return buttonArrayPrivate }
+    
     /// 是否可以左滑
     open var isLeftSlide: Bool = true {
         didSet {
@@ -100,12 +77,7 @@ open class LateralView: UIView,UIScrollViewDelegate {
             buttonArrayPrivate = (delegate?.lateralViewAddButton(view: self)) ?? []
         }
     }
-
-    /// 当isOpen状态改变的时候会调用这个方法
-    open func lateralViewWillChangeOpenStatusFunc(block: ((_ view:LateralView,_ isOpen:Bool)->())?) {
-        lateralViewWillChangeOpenStatusBlock = block
-    }
-
+    
     ///是否为打开状态，可控制开启或关闭，有动画
     open var isOpen: Bool = false {
         didSet {
@@ -114,7 +86,7 @@ open class LateralView: UIView,UIScrollViewDelegate {
             close()
         }
     }
-   
+    
     /// color 容器视图的color
     open var continerViewColor: UIColor = UIColor.white {
         didSet {
@@ -128,13 +100,83 @@ open class LateralView: UIView,UIScrollViewDelegate {
         }
     }
     
-    //MARK: - public func
     ///返回button 宽度总和 （算button之间的间距）
-    open func buttonTotalWidth() -> CGFloat{
-        return buttonTotalWidthPrivate
+    open var buttonTotalWidth: CGFloat { return buttonTotalWidthPrivate }
+    
+    //MARK: private property
+    private var continerView_private: UIView = UIView()
+    private var isFirstLayout = true
+    private var buttonArrayPrivate: [UIButton] = [UIButton]()
+    private var buttonWDic = [UIButton:CGFloat]()
+    private var lateralViewWillChangeOpenStatusBlock: ((_ view:LateralView,_ isOpen:Bool)->())?
+    private var buttonTotalWidthPrivate: CGFloat = 0
+    private var tap: UITapGestureRecognizer = {
+        let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapFunc))
+        return tap
+    }()
+    
+    // MARK: - func
+    /// 当isOpen状态改变的时候会调用这个方法
+    open func lateralViewWillChangeOpenStatusFunc(block: ((_ view:LateralView,_ isOpen:Bool)->())?) {
+        lateralViewWillChangeOpenStatusBlock = block
     }
     
-    //MARK: - observer func
+    // MARK: lazy loads     ///不会 调用代理方法 里的打开状态改变
+    private func close() {
+        let offsetX_Max: CGFloat = self.buttonTotalWidthPrivate
+        let offsetX_Min: CGFloat = 0
+        let offsetX: CGFloat = isOpen ? offsetX_Max : offsetX_Min
+        let offset = CGPoint.init(x: offsetX, y: 0)
+        scrollView.setEventWith(point: CGPoint.zero, andIsOpen: isOpen)
+        UIView.animate(withDuration: 0.1) {
+            self.scrollView.contentOffset = offset
+        }
+    }
+    private func layoutButton() {
+        buttonTotalWidthPrivate = 0
+        for index in 0 ..< buttonArrayPrivate.count {
+            
+            let button = buttonArray[index]
+            insertSubview(button, belowSubview: scrollView)
+            let rightMargin = delegate?.lateralViewButtonRightMargin(button: button, index: index) ?? 0
+            let buttonTopMargin = delegate?.lateralViewButtonTopBottomMargin(button: button, index: index) ?? 0
+            let buttonW = delegate?.lateralViewButtonWidth(button: button, index: index) ?? 0
+            buttonTotalWidthPrivate += (rightMargin + buttonW)
+            buttonWDic[button] = buttonW
+            
+            var x: CGFloat = self.frame.width
+            if (index >= 1) {
+                let buttonFront = buttonArray[index - 1]
+                x = buttonFront.frame.origin.x
+            }
+            
+            x -= (buttonW + rightMargin)
+            let h = self.frame.height - buttonTopMargin * 2.0
+            button.frame = CGRect.init(x: x, y: buttonTopMargin, width: buttonW, height: h)
+            
+        }
+        let leftMargin = (delegate?.lateralViewLastButtonLeftMargin(view: self)) ?? 0
+        buttonTotalWidthPrivate += leftMargin
+        
+    }
+    
+    // MARK: handle views
+    ///设置
+    private func setup() {
+        scrollView.panGestureRecognizer.addObserver(self, forKeyPath: "state", options: NSKeyValueObservingOptions.new, context: nil)
+        isFirstLayout = true
+        scrollView.removeFromSuperview()
+        addSubview(scrollView)
+        scrollView.addSubview(continerView)
+        buttonArrayPrivate = (delegate?.lateralViewAddButton(view: self)) ?? []
+        layoutButton()
+    }
+    
+    // MARK: handle event
+    @objc private func tapFunc(tap: UITapGestureRecognizer) {
+        isOpen = true
+    }
+    //MARK: observer func
     override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath?.elementsEqual("state") ?? false {
             if let state = change?[NSKeyValueChangeKey.newKey] as? Int {
@@ -153,6 +195,7 @@ open class LateralView: UIView,UIScrollViewDelegate {
         }
     }
     
+    // MARK:life cycles
     override open func addSubview(_ view: UIView) {
         if (view == scrollView) {
             super.addSubview(view)
@@ -173,54 +216,31 @@ open class LateralView: UIView,UIScrollViewDelegate {
     }
     
     override open func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        let x = bounds.width - buttonTotalWidth()
-        scrollView.setEventWith(point: CGPoint.init(x: x, y: point.y), andIsOpen: self.scrollView.contentOffset.x >= buttonTotalWidth())
+        let x = bounds.width - buttonTotalWidthPrivate
+        scrollView.setEventWith(point: CGPoint.init(x: x, y: point.y), andIsOpen: self.scrollView.contentOffset.x >= buttonTotalWidthPrivate)
         if (isOpen && point.x <= x) {
             isOpen = false
         }
         return super.hitTest(point, with: event)
     }
     
-    //MARK: - private function
-    ///不会 调用代理方法 里的打开状态改变
-    private func close() {
-        let offsetX_Max: CGFloat = self.buttonTotalWidth()
-        let offsetX_Min: CGFloat = 0
-        let offsetX: CGFloat = isOpen ? offsetX_Max : offsetX_Min
-        let offset = CGPoint.init(x: offsetX, y: 0)
-        scrollView.setEventWith(point: CGPoint.zero, andIsOpen: isOpen)
-        UIView.animate(withDuration: 0.1) {
-            self.scrollView.contentOffset = offset
-        }
-    }
-    private func layoutButton() {
-        buttonTotalWidthPrivate = 0
-        for index in 0 ..< buttonArrayPrivate.count {
-            let button = buttonArray[index]
-            insertSubview(button, belowSubview: scrollView)
-            let rightMargin = delegate?.lateralViewButtonRightMargin(button: button, index: index) ?? 0
-            let buttonTopMargin = delegate?.lateralViewButtonTopBottomMargin(button: button, index: index) ?? 0
-            let buttonW = delegate?.lateralViewButtonWidth(button: button, index: index) ?? 0
-            buttonTotalWidthPrivate += (rightMargin + buttonW)
-            buttonWDic[button] = buttonW
-            
-            var x: CGFloat = self.frame.width
-            if (index >= 1) {
-               let buttonFront = buttonArray[index - 1]
-                x = buttonFront.frame.origin.x
-            }
-            x -= (buttonW + rightMargin)
-            let h = self.frame.height - buttonTopMargin * 2.0
-            button.frame = CGRect.init(x: x, y: buttonTopMargin, width: buttonW, height: h)
-        }
-        let leftMargin = (delegate?.lateralViewLastButtonLeftMargin(view: self)) ?? 0
-        buttonTotalWidthPrivate += leftMargin
-    }
-
     deinit {
         scrollView.panGestureRecognizer.removeObserver(self, forKeyPath: "state")
     }
+    
 
+    // MARK: lazy loads
+    /// scrollView
+    private lazy var scrollView: LateralScrollView = {
+        let scrollView = LateralScrollView()
+        scrollView.delegate = self
+        scrollView.addGestureRecognizer(self.tap)
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.backgroundColor = UIColor.clear
+        
+        return scrollView
+    }()
 }
 
 //MARK: - scrollView delegate

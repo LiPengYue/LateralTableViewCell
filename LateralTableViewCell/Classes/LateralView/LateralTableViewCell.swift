@@ -26,12 +26,17 @@ open class LateralTableViewCell: UITableViewCell {
     }
     
     // MARK: - properties
-    ///是否可以同时展开多个cell
+    var laterViewEdgeInsets = UIEdgeInsets.zero {
+        didSet {
+            isLayoutLaterView = true
+            layoutLateralView()
+        }
+    }
     weak open var delegate: LateralViewDelegate? { didSet { lateralView.delegate = delegate } }
     open var isOpen = false { didSet { lateralView.isOpen = isOpen } }
+    /// 是否可以同时展开多个cell
     open var isUnfoldingAtTheSameTime: Bool = false
     private weak var tableView: UITableView?
-   
     // MARK: - func
     // MARK: handle views
     private func setupFunc() {
@@ -54,14 +59,32 @@ open class LateralTableViewCell: UITableViewCell {
         super.didMoveToSuperview()
         tableView = getTableView(view: self)
     }
-    
+    private var isLayoutLaterView: Bool = true
     open override func layoutSubviews() {
         super.layoutSubviews()
-        lateralView.frame = contentView.bounds
+        if !isLayoutLaterView { return }
+        layoutLateralView()
     }
+    
+    private func layoutLateralView() {
+        
+        let x = laterViewEdgeInsets.left
+        let w = contentView.frame.width
+            - laterViewEdgeInsets.left
+            - laterViewEdgeInsets.right
+        
+        let y = laterViewEdgeInsets.top
+        let h = contentView.frame.height
+            - laterViewEdgeInsets.top
+            - laterViewEdgeInsets.bottom
+        
+        lateralView.frame = CGRect.init(x: x, y: y, width: w, height: h)
+    }
+    
     
     // MARK: lazy loads
     public lazy var lateralView: LateralView = {
+        
         let lateralView = LateralView()
         lateralView.delegate = self.delegate
         lateralView.lateralViewWillChangeOpenStatusFunc {[weak self] (view, isOpen) in
@@ -70,6 +93,7 @@ open class LateralTableViewCell: UITableViewCell {
             }
         }
         return lateralView
+        
     }()
 }
 

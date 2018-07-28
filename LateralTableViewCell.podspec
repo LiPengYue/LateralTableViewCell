@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LateralTableViewCell'
-  s.version          = '1.1.1'
+  s.version          = '1.1.2'
   s.summary          = '自定义TableView的侧滑删除'
 
 # This description is used to generate tags and improve search results.

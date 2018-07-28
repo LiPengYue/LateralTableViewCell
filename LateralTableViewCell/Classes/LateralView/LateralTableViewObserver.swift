@@ -8,8 +8,20 @@
 import UIKit
 
 class LateralTableViewObserver: NSObject {
-
-    private var tableView: UITableView?
+    var isRemovedObserver: Bool = false
+    private var tableViewClassStr: String = ""
+    weak var tableView: UITableView? {
+        didSet {
+            if let tableView = tableView {
+                tableViewClassStr = "\(type(of: tableView))"
+                tableView.addObserver(self,
+                                      forKeyPath: "contentOffset",
+                                      options: .new,
+                                      context: nil)
+                isRemovedObserver = false
+            }
+        }
+    }
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "contentOffset" {
             if let tableView = object as? UITableView{
@@ -17,8 +29,13 @@ class LateralTableViewObserver: NSObject {
             }
         }
     }
-    
     deinit {
-        tableView?.removeObserver(self, forKeyPath: "contentOffset")
+        if !isRemovedObserver {
+            print("\n🌶: 没有在"
+                + tableViewClassStr
+                + " 的deinit方法中调用\n"
+                + "< self.removeObserve() >\n")
+        }
+        
     }
 }

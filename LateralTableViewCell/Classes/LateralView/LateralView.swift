@@ -9,25 +9,25 @@
 import UIKit
 // read me
 /**
-  1. 层级结构（superView -> subView）
-    self.addSubView(buttons)
-    self.addSubView(scrollView)
-    scrollView.addSubView(continerView)
-  2. 侧滑后button点击问题的解决方法：
-    其实scrollView是挡住了buttons
-    自定义scrollView：`LateralScrollView`
-    重写了`func point(inside point: CGPoint, with event: UIEvent?) -> Bool` 方法
-    判断点击范围是否在button的范围内，如果在，则响应事件穿透到下一层view，否则响应事件
-  3. 打开cell后的复用问题的解决：
-    给tableView添加分类`TableView+LateralView`
-    添加了当前打开的index属性作为标记
-  4. 滑动tableView的时候关闭所有cell的解决
-    在tableView添加的分类中添加`observe：LateralTableViewObserver`属性
-    并监听offset变化，如果改变，则关闭所有cell
-  5. 未解决问题：允许多个cell打开的情况下，滑动tableView依然关闭所有cell，没有碰到类似需求，如果有用到可以呼叫我进行优化
-  6. tableView 自适应行高问题的解决
-    用系统约束布局，scrollView，以及continerView,
-    在布局continerView的时候，因为其属于scrollView的subView，所以需要注意，设置left，width，top，bottom 等于scrollView，并设置scrollView的contentSize，才能正常显示并可以滑动
+ 1. 层级结构（superView -> subView）
+ self.addSubView(buttons)
+ self.addSubView(scrollView)
+ scrollView.addSubView(continerView)
+ 2. 侧滑后button点击问题的解决方法：
+ 其实scrollView是挡住了buttons
+ 自定义scrollView：`LateralScrollView`
+ 重写了`func point(inside point: CGPoint, with event: UIEvent?) -> Bool` 方法
+ 判断点击范围是否在button的范围内，如果在，则响应事件穿透到下一层view，否则响应事件
+ 3. 打开cell后的复用问题的解决：
+ 给tableView添加分类`TableView+LateralView`
+ 添加了当前打开的index属性作为标记
+ 4. 滑动tableView的时候关闭所有cell的解决
+ 在tableView添加的分类中添加`observe：LateralTableViewObserver`属性
+ 并监听offset变化，如果改变，则关闭所有cell
+ 5. 未解决问题：允许多个cell打开的情况下，滑动tableView依然关闭所有cell，没有碰到类似需求，如果有用到可以呼叫我进行优化
+ 6. tableView 自适应行高问题的解决
+ 用系统约束布局，scrollView，以及continerView,
+ 在布局continerView的时候，因为其属于scrollView的subView，所以需要注意，设置left，width，top，bottom 等于scrollView，并设置scrollView的contentSize，才能正常显示并可以滑动
  */
 
 ///获取 button
@@ -43,9 +43,9 @@ import UIKit
     func lateralViewButtonRightMargin(button: UIButton,index:NSInteger) -> (CGFloat)
     ///距离上下的间距 默认为0
     func lateralViewButtonTopBottomMargin(button: UIButton,index:NSInteger) -> (CGFloat)
-   
+    
     ///展开的时候调用
-   @objc optional func lateralViewWillChangeOpenStatusFunc(view:LateralView,isOpen:Bool)
+    @objc optional func lateralViewWillChangeOpenStatusFunc(view:LateralView,isOpen:Bool)
 }
 
 /// 自定义 侧滑
@@ -75,11 +75,7 @@ open class LateralView: UIView,UIScrollViewDelegate {
     }
     
     ///delegate 里面有设置button的方法
-    weak open var delegate: LateralViewDelegate? {
-        didSet {
-            buttonArrayPrivate = (delegate?.lateralViewAddButton(view: self)) ?? []
-        }
-    }
+    weak open var delegate: LateralViewDelegate?
     
     ///是否为打开状态，可控制开启或关闭，有动画
     open var isOpen: Bool = false {
@@ -117,11 +113,15 @@ open class LateralView: UIView,UIScrollViewDelegate {
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapFunc))
         return tap
     }()
-    
+    private var scrollViewHeightConstraint: NSLayoutConstraint?
     // MARK: - func
     /// 当isOpen状态改变的时候会调用这个方法
     open func lateralViewWillChangeOpenStatusFunc(block: ((_ view:LateralView,_ isOpen:Bool)->())?) {
         lateralViewWillChangeOpenStatusBlock = block
+    }
+    
+    open func relayoutButtons() {
+        layoutButton()
     }
     
     // MARK: lazy loads     ///不会 调用代理方法 里的打开状态改变
@@ -137,9 +137,13 @@ open class LateralView: UIView,UIScrollViewDelegate {
     }
     private func layoutButton() {
         buttonTotalWidthPrivate = 0
+        let _ = buttonArrayPrivate.map{ $0.removeFromSuperview() }
+        let buttonArrayTemp = delegate?.lateralViewAddButton(view: self)
+        buttonArrayPrivate = buttonArrayTemp ?? []
+        
         for index in 0 ..< buttonArrayPrivate.count {
             
-            let button = buttonArray[index]
+            let button = buttonArrayPrivate[index]
             insertSubview(button, belowSubview: scrollView)
             let rightMargin = delegate?.lateralViewButtonRightMargin(button: button, index: index) ?? 0
             let buttonTopMargin = delegate?.lateralViewButtonTopBottomMargin(button: button, index: index) ?? 0
@@ -166,29 +170,40 @@ open class LateralView: UIView,UIScrollViewDelegate {
     // MARK: handle views
     ///设置
     private func setup() {
-        scrollView.panGestureRecognizer.addObserver(self, forKeyPath: "state", options: NSKeyValueObservingOptions.new, context: nil)
+    
         isFirstLayout = true
         scrollView.removeFromSuperview()
         addSubview(scrollView)
         scrollView.addSubview(continerView)
+       
+        addConstraint_scrollView()
+        addConstraint_continerView()
         
+        scrollView.panGestureRecognizer.addObserver(self,
+                                                    forKeyPath: "state",
+                                                    options: .new,
+                                                    context: nil)
+    }
+    
+    private func addConstraint_scrollView() {
+        // layout scrollView
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-        continerView.translatesAutoresizingMaskIntoConstraints = false
         let sLeft = scrollView.leftConstraint(toItem: self, offset: 0)
         let sRight = scrollView.rightConstraint(toItem: self, offset: 0)
         let sTop = scrollView.topConstraint(toItem: self, offset: 0)
         let sBottom = scrollView.bottomConstraint(toItem: self, offset: 0)
         self.addConstraints([sLeft,sRight,sTop,sBottom])
         
+    }
+    
+    private func addConstraint_continerView() {
+        // layout continerView
+        continerView.translatesAutoresizingMaskIntoConstraints = false
         let cLeft = continerView.leftConstraint(toItem: scrollView, offset: 0)
-//        let cRight = continerView.rightConstraint(toItem: self, offset: 0)
         let cTop = continerView.topConstraint(toItem: self, offset: 0)
         let cBottom = continerView.bottomConstraint(toItem: self, offset: 0)
         let cwidth = continerView.widthConstraint(toItem: self, offset: 0)
         self.addConstraints([cLeft,cBottom,cTop,cwidth])
-        
-        buttonArrayPrivate = (delegate?.lateralViewAddButton(view: self)) ?? []
-        layoutButton()
     }
     
     // MARK: handle event
@@ -196,7 +211,10 @@ open class LateralView: UIView,UIScrollViewDelegate {
         isOpen = true
     }
     //MARK: observer func
-    override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    override open func observeValue(forKeyPath keyPath: String?,
+                                    of object: Any?,
+                                    change: [NSKeyValueChangeKey : Any]?,
+                                    context: UnsafeMutableRawPointer?) {
         if keyPath?.elementsEqual("state") ?? false {
             if let state = change?[NSKeyValueChangeKey.newKey] as? Int {
                 
@@ -210,7 +228,10 @@ open class LateralView: UIView,UIScrollViewDelegate {
                 }
             }
         }else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+            super.observeValue(forKeyPath: keyPath,
+                               of: object,
+                               change: change,
+                               context: context)
         }
     }
     
@@ -223,25 +244,22 @@ open class LateralView: UIView,UIScrollViewDelegate {
         continerView.addSubview(view)
     }
     
-    var heightConstraint: NSLayoutConstraint?
     override open func layoutSubviews() {
-
-         let heightConstraintTemp = scrollView.heightConstraint(toItem: self, offset: self.frame.height)
+        
+        let heightConstraintTemp = scrollView.heightConstraint(toItem: self, offset: self.frame.height)
         
         if (isFirstLayout) {
             isFirstLayout = false
-//            scrollView.frame = bounds
-//            continerView.frame = bounds
             self.addConstraint(heightConstraintTemp)
             continerView.backgroundColor = continerViewColor
             self.updateConstraints()
             layoutButton()
         }else{
-            self.removeConstraint(heightConstraint!)
+            self.removeConstraint(scrollViewHeightConstraint!)
             self.addConstraint(heightConstraintTemp)
             self.updateConstraints()
         }
-        heightConstraint = heightConstraintTemp
+        scrollViewHeightConstraint = heightConstraintTemp
         scrollView.contentSize = CGSize.init(width: frame.size.width + buttonTotalWidthPrivate, height: 0)
     }
     
@@ -258,7 +276,7 @@ open class LateralView: UIView,UIScrollViewDelegate {
         scrollView.panGestureRecognizer.removeObserver(self, forKeyPath: "state")
     }
     
-
+    
     // MARK: lazy loads
     /// scrollView
     private lazy var scrollView: LateralScrollView = {
@@ -271,17 +289,17 @@ open class LateralView: UIView,UIScrollViewDelegate {
         
         return scrollView
     }()
-  
+    
 }
 
 //MARK: - scrollView delegate
 extension LateralView {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if (scrollView.contentOffset.x < 0) {
-           scrollView.contentOffset.x = 0
+            scrollView.contentOffset.x = 0
         }
         if (!scrollView.isTracking && scrollView.contentOffset.x >= 1 && !isOpen) {
-             isOpen = true
+            isOpen = true
         }
     }
 }

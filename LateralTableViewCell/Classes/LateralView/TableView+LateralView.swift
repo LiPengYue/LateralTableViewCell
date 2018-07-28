@@ -20,7 +20,7 @@ extension UITableView {
             setIsCloseAllCellWithScroll(isAutoCloseAllCellWithScrollTableView)
         }
     }
-   
+    
     
     private var observe: LateralTableViewObserver? {
         get { return getObserve() }
@@ -52,6 +52,13 @@ extension UITableView {
         }
     }
     
+    open func removeObserve() {
+        if let observe = observe {
+            self.removeObserver(observe, forKeyPath: "contentOffset")
+            observe.isRemovedObserver = true
+        }
+    }
+    
     private func getIsCloseAllCellWithScroll() -> Bool{
         let isAutoCloseUnpointer = UITableView.IsAutoCloseAllCellWithScrollTableViewUnsafeRawPointer.isAutoClose!
         let isClose = objc_getAssociatedObject(self, isAutoCloseUnpointer) as? Bool
@@ -62,7 +69,7 @@ extension UITableView {
         let isAutoCloseUnpointer = UITableView.IsAutoCloseAllCellWithScrollTableViewUnsafeRawPointer.isAutoClose!
         objc_setAssociatedObject(self, isAutoCloseUnpointer, isAutoClose, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         let observe = isAutoClose ? LateralTableViewObserver() : nil
-            self.observe = observe
+        self.observe = observe
     }
     
     private func setObserve(_ observe: LateralTableViewObserver?) {
@@ -72,12 +79,7 @@ extension UITableView {
                                  isAutoCloseObserve,
                                  observe, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         
-        if let observe = observe  {
-            addObserver(observe,
-                        forKeyPath: "contentOffset",
-                        options: .new,
-                        context: nil)
-        }
+        observe?.tableView = self
     }
     
     private func getObserve() -> LateralTableViewObserver? {
@@ -101,5 +103,5 @@ private extension UITableView {
     struct IsAutoCloseObserve {
         static let isAutoCloseObserve = UnsafeRawPointer.init(bitPattern: "IsAutoCloseAllCellWithScrollTableViewObserve".hashValue)
     }
-
+    
 }

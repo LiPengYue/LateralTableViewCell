@@ -28,6 +28,9 @@ class PYTableView: UITableView,
         isAutoCloseAllCellWithScrollTableView = true
         register(PYTableViewCell.self, forCellReuseIdentifier: bookCellID)
     }
+    deinit {
+        removeObserve()
+    }
 }
 
 

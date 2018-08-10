@@ -11,6 +11,11 @@ extension UITableView {
     /// 关闭所有开启的cell --- LateralTableViewCell
     open func closeAllCell() {
         self.OpenLateralViewIndexPath = nil
+        for subView in self.subviews {
+            if let subview = subView as? LateralTableViewCell {
+                subview.isOpen = false
+            }
+        }
     }
     
     /// 滑动的时候是否自动关闭所有cell --- LateralTableViewCell
@@ -42,7 +47,7 @@ extension UITableView {
         }
         set(newValue){
             if let oldValue = OpenLateralViewIndexPathPrivate {
-                if newValue != (OpenLateralViewIndexPathPrivate) {
+                if newValue != oldValue {
                     if let cell = self.cellForRow(at: oldValue) as? LateralTableViewCell{
                         cell.isOpen = false
                     }

@@ -101,7 +101,7 @@ open class LateralTableViewCell: UITableViewCell {
         contentView.addConstraint(rightConstraint!)
         contentView.addConstraint(bottomConstraint!)
         contentView.addConstraint(topConstraint!)
-//        contentView.addConstraint(heightConstraint!)
+        //        contentView.addConstraint(heightConstraint!)
         contentView.updateConstraints()
     }
     private var leftConstraint: NSLayoutConstraint?
@@ -176,23 +176,23 @@ extension UIView {
     func heightConstraint(toItem: UIView,offset: CGFloat) -> NSLayoutConstraint {
         translatesAutoresizingMaskIntoConstraints = false
         let height = NSLayoutConstraint.init(item: self,
-                                          attribute: .height,
-                                          relatedBy: .equal,
-                                          toItem: nil,
-                                          attribute: .notAnAttribute,
-                                          multiplier: 1,
-                                          constant: offset)
+                                             attribute: .height,
+                                             relatedBy: .equal,
+                                             toItem: nil,
+                                             attribute: .notAnAttribute,
+                                             multiplier: 1,
+                                             constant: offset)
         return height
     }
     func widthConstraint(offset: CGFloat) -> NSLayoutConstraint {
         translatesAutoresizingMaskIntoConstraints = false
         let width = NSLayoutConstraint.init(item: self,
-                                          attribute: .width,
-                                          relatedBy: .equal,
-                                          toItem: nil,
-                                          attribute: .notAnAttribute,
-                                          multiplier: 1,
-                                          constant: offset)
+                                            attribute: .width,
+                                            relatedBy: .equal,
+                                            toItem: nil,
+                                            attribute: .notAnAttribute,
+                                            multiplier: 1,
+                                            constant: offset)
         return width
     }
     func widthConstraint(toItem: UIView,offset: CGFloat) -> NSLayoutConstraint {

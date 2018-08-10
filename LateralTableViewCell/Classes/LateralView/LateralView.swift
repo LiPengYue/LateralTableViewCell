@@ -65,7 +65,13 @@ open class LateralView: UIView,UIScrollViewDelegate {
     open var continerView: UIView { return continerView_private }
     
     /// buttonArray
-    open var buttonArray: [UIButton] { return buttonArrayPrivate }
+    open var buttonArray: [UIButton] {
+        if (buttonArrayPrivate.count <= 0) {
+            let buttonArrayTemp = delegate?.lateralViewAddButton(view: self)
+            buttonArrayPrivate = buttonArrayTemp ?? []
+        }
+        return buttonArrayPrivate
+    }
     
     /// 是否可以左滑
     open var isLeftSlide: Bool = true {
@@ -114,6 +120,7 @@ open class LateralView: UIView,UIScrollViewDelegate {
         return tap
     }()
     private var scrollViewHeightConstraint: NSLayoutConstraint?
+    
     // MARK: - func
     /// 当isOpen状态改变的时候会调用这个方法
     open func lateralViewWillChangeOpenStatusFunc(block: ((_ view:LateralView,_ isOpen:Bool)->())?) {
@@ -137,13 +144,11 @@ open class LateralView: UIView,UIScrollViewDelegate {
     }
     private func layoutButton() {
         buttonTotalWidthPrivate = 0
-        let _ = buttonArrayPrivate.map{ $0.removeFromSuperview() }
-        let buttonArrayTemp = delegate?.lateralViewAddButton(view: self)
-        buttonArrayPrivate = buttonArrayTemp ?? []
+        let _ = buttonArray.map{ $0.removeFromSuperview() }
         
-        for index in 0 ..< buttonArrayPrivate.count {
+        for index in 0 ..< buttonArray.count {
             
-            let button = buttonArrayPrivate[index]
+            let button = buttonArray[index]
             insertSubview(button, belowSubview: scrollView)
             let rightMargin = delegate?.lateralViewButtonRightMargin(button: button, index: index) ?? 0
             let buttonTopMargin = delegate?.lateralViewButtonTopBottomMargin(button: button, index: index) ?? 0
@@ -170,12 +175,12 @@ open class LateralView: UIView,UIScrollViewDelegate {
     // MARK: handle views
     ///设置
     private func setup() {
-    
+        
         isFirstLayout = true
         scrollView.removeFromSuperview()
         addSubview(scrollView)
         scrollView.addSubview(continerView)
-       
+        
         addConstraint_scrollView()
         addConstraint_continerView()
         
@@ -183,6 +188,8 @@ open class LateralView: UIView,UIScrollViewDelegate {
                                                     forKeyPath: "state",
                                                     options: .new,
                                                     context: nil)
+        let buttonArrayTemp = delegate?.lateralViewAddButton(view: self)
+        buttonArrayPrivate = buttonArrayTemp ?? []
     }
     
     private func addConstraint_scrollView() {

@@ -23,5 +23,5 @@ open class LateralScrollView: UIScrollView {
             return super.point(inside: point, with: event)
         }
     }
-
+    
 }

@@ -420,10 +420,10 @@
 		602A88A09EFEAAC6CC43937FBDF09437 /* LateralView */ = {
 			isa = PBXGroup;
 			children = (
-				2FB36F4E55D9D3032090C653C3308FED /* LateralTableViewCell.swift */,
-				DC360243CF2874B626B5A265AC0E8E3C /* LateralView.swift */,
 				DDCFDFCC81189DE97A229C362955BD3B /* LateralScrollView.swift */,
+				2FB36F4E55D9D3032090C653C3308FED /* LateralTableViewCell.swift */,
 				270F7C654C32C2BE5BD0DB6531C78489 /* LateralTableViewObserver.swift */,
+				DC360243CF2874B626B5A265AC0E8E3C /* LateralView.swift */,
 				7E397007F9FE25F9618C7FD074D7C1B6 /* TableView+LateralView.swift */,
 			);
 			name = LateralView;

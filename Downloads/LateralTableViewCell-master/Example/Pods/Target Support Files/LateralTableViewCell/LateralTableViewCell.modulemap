@@ -1,0 +1,6 @@
+framework module LateralTableViewCell {
+  umbrella header "LateralTableViewCell-umbrella.h"
+
+  export *
+  module * { export * }
+}
